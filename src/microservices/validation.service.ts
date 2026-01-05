@@ -29,7 +29,7 @@ export interface CompanyInfo {
 export class ValidationService{
     constructor(
         @Inject('AUTH_SERVICE') private readonly authClient: ClientProxy,
-        @Inject('BACKEND_SERVICE') private readonly backendClient: ClientProxy
+        @Inject('STRUCTURE_SERVICE') private readonly structureClient: ClientProxy
     ) {}
 
     async validateUserId(userId: number): Promise<boolean> {
@@ -67,10 +67,10 @@ export class ValidationService{
     async validateCompanyId(companyId: number): Promise<boolean> {
         try {
             const result = await firstValueFrom(
-                this.backendClient.send('validate_company', companyId).pipe(
+                this.structureClient.send('validate_company', companyId).pipe(
                     timeout(5000),
                     catchError((err) => {
-                        throw new BadRequestException(`Backend service error: ${err.message}`);
+                        throw new BadRequestException(`Structure service error: ${err.message}`);
                     }),
                 ),
             );
@@ -127,13 +127,13 @@ export class ValidationService{
   // ==================== DATA FETCHING METHODS ====================
 
   /**
-   * Fetch single company by ID from Backend Service
-   * Uses existing 'get_company' pattern in backend
+   * Fetch single company by ID from Structure Service
+   * Uses existing 'get_company' pattern in Structure Service
    */
   async getCompanyById(companyId: number): Promise<CompanyInfo | null> {
     try {
       const result = await firstValueFrom(
-        this.backendClient.send('get_company', companyId).pipe(
+        this.structureClient.send('get_company', companyId).pipe(
           timeout(5000),
           catchError(() => of(null)),
         ),
@@ -178,8 +178,8 @@ export class ValidationService{
   }
 
   /**
-   * Fetch multiple companies by IDs from Backend Service
-   * Uses existing 'get_companies' pattern in backend
+   * Fetch multiple companies by IDs from Structure Service
+   * Uses existing 'get_companies' pattern in Structure Service
    */
   async getCompaniesByIds(companyIds: number[]): Promise<Map<number, CompanyInfo>> {
     const companyMap = new Map<number, CompanyInfo>();
@@ -190,8 +190,8 @@ export class ValidationService{
     
     try {
       const result = await firstValueFrom(
-        // Using 'get_companies' pattern that exists in backend service
-        this.backendClient.send('get_companies', uniqueIds).pipe(
+        // Using 'get_companies' pattern that exists in Structure Service
+        this.structureClient.send('get_companies', uniqueIds).pipe(
           timeout(10000),
           catchError(() => of([])),
         ),

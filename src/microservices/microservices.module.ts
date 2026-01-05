@@ -20,13 +20,13 @@ import { ValidationService } from './validation.service';
                 inject: [ConfigService],
             },
             {
-                name: 'BACKEND_SERVICE',
+                name: 'STRUCTURE_SERVICE',
                 imports: [ConfigModule],
                 useFactory: (configService: ConfigService) => ({
                     transport: Transport.TCP,
                     options: {
-                        host: configService.get<string>('BACKEND_SERVICE_HOST', 'localhost'),
-                        port: configService.get<number>('BACKEND_SERVICE_PORT', 3010),
+                        host: configService.get<string>('STRUCTURE_SERVICE_HOST', 'localhost'),
+                        port: configService.get<number>('STRUCTURE_SERVICE_PORT', 3206),
                     },
                 }),
                 inject: [ConfigService],
